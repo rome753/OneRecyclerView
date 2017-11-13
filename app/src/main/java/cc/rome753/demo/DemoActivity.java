@@ -1,5 +1,6 @@
 package cc.rome753.demo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -30,12 +31,6 @@ public class DemoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_demo);
         orv = findViewById(R.id.orv);
         orv.init(
-                new OnCreateVHListener() {
-                    @Override
-                    public OneVH onCreateHolder(ViewGroup parent) {
-                        return new UserInfoVH(parent);
-                    }
-                },
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
@@ -46,6 +41,28 @@ public class DemoActivity extends AppCompatActivity {
                     @Override
                     public void onLoadMore() {
                         requestData(true);
+                    }
+                },
+                new OnCreateVHListener() {
+                    @Override
+                    public OneVH onCreateHolder(ViewGroup parent) {
+                        return new UserInfoVH(parent);
+                    }
+
+                    @Override
+                    public boolean isCreate(int position, Object o) {
+                        return position % 3 > 0;
+                    }
+                },
+                new OnCreateVHListener() {
+                    @Override
+                    public OneVH onCreateHolder(ViewGroup parent) {
+                        return new TextVH(parent);
+                    }
+
+                    @Override
+                    public boolean isCreate(int position, Object o) {
+                        return position % 3 == 0;
                     }
                 }
         );
@@ -73,6 +90,26 @@ public class DemoActivity extends AppCompatActivity {
             });
             TextView tvName = itemView.findViewById(R.id.tv_name);
             tvName.setText(o.getName());
+        }
+    }
+
+    class TextVH extends OneVH<UserInfo> {
+
+        public TextVH(ViewGroup parent) {//1.设置item布局文件
+            super(parent, android.R.layout.simple_list_item_1);
+        }
+
+        @Override
+        public void bindView(int position, final UserInfo o) {//2.处理点击事件和设置数据
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(), o.getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+            TextView tvName = itemView.findViewById(android.R.id.text1);
+            tvName.setText(o.getName());
+            tvName.setBackgroundColor(Color.GREEN);
         }
     }
 

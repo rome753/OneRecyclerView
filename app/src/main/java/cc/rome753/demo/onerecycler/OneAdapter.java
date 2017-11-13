@@ -12,25 +12,35 @@ import java.util.List;
  *
  * 泛型S是ViewHolder类型，泛型T是数据类型
  *
- * ViewType: footer=0, header=-1,-2,-3..., 普通item=1
+ * ViewType:
+     * header1...-3
+     * header2...-2
+     * footer...-1
+     * normal1...0
+     * normal2...1
+     * normal3...2
  *
  * Created by chao on 2017/4/11.
  */
 
 public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
 
+    private static final int TYPE_FOOTER = -1;
+    private static final int TYPE_HEADER_MAX = TYPE_FOOTER - 1;
+    private static final int TYPE_NORMAL_MIN = TYPE_FOOTER + 1;
+
     private List<T> data;
-    private OnCreateVHListener<S> onCreateVHListener;
+    private List<OnCreateVHListener<S,T>> listeners;
 
     private List<OneVH<Object>> headerVHList;
     private OneVH<Object> footerVH;
 
-    public OneAdapter(OnCreateVHListener<S> onCreateVHListener){
-        this(onCreateVHListener, null);
+    public OneAdapter(List<OnCreateVHListener<S,T>> listeners){
+        this(listeners, null);
     }
 
-    public OneAdapter(OnCreateVHListener<S> onCreateVHListener, View oneLoadingLayout){
-        this.onCreateVHListener = onCreateVHListener;
+    public OneAdapter(List<OnCreateVHListener<S,T>> listeners, View oneLoadingLayout){
+        this.listeners = listeners;
         if(oneLoadingLayout != null) {
             this.footerVH = new OneVH<Object>(oneLoadingLayout) {
                 @Override
@@ -61,39 +71,49 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
     }
 
     @Override
-    public S onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType < 0){
-            return (S) headerVHList.get(-(viewType + 1));
+    public int getItemViewType(int position) {
+        if(position < headerVHList.size()){
+            return TYPE_HEADER_MAX - position;
         }
-        if(viewType == 0){
+        if(footerVH != null && position == getItemCount() - 1){
+            return TYPE_FOOTER;
+        }
+
+        int pos = position - headerVHList.size();
+        T t = data.get(pos);
+
+        for(int i = 0; i < listeners.size(); i++){
+            OnCreateVHListener<S,T> listener = listeners.get(i);
+            if(listener.isCreate(pos, t)){
+                return i;
+            }
+        }
+        return TYPE_NORMAL_MIN;
+    }
+
+    @Override
+    public S onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType <= TYPE_HEADER_MAX){
+            return (S) headerVHList.get(TYPE_HEADER_MAX - viewType);
+        }
+        if(viewType == TYPE_FOOTER){
             return (S) footerVH;
         }
-        return onCreateVHListener.onCreateHolder(parent);
+        return listeners.get(viewType).onCreateHolder(parent);
     }
 
     @Override
     public void onBindViewHolder(S holder, int position) {
-        if(getItemViewType(position) < 0){//header
+        if(getItemViewType(position) <= TYPE_HEADER_MAX){//header
             return;
         }
-        if(getItemViewType(position) == 0){//footer
+        if(getItemViewType(position) == TYPE_FOOTER){//footer
             return;
         }
 
         int pos = position - headerVHList.size();
         T t = data.get(pos);
         holder.bindView(pos, t);
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if(position < headerVHList.size()){
-            return -position - 1;//-1,-2...
-        }
-        if(footerVH != null && position == getItemCount() - 1){
-            return 0;
-        }
-        return position + 1;
     }
 
     @Override
@@ -111,7 +131,7 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
      * @return
      */
     boolean isNormalItem(int position){
-        return getItemViewType(position) > 0;
+        return getItemViewType(position) >= TYPE_NORMAL_MIN;
     }
 
 }

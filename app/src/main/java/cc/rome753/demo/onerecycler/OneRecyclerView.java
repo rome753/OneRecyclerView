@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import cc.rome753.demo.R;
@@ -98,39 +100,42 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
 
     /**
      * 初始化方法，传入需要的接口实现类
-     * @param onCreateVHListener 创建ViewHolder接口
+     * @param onCreateVHListeners 创建ViewHolder接口
      */
-    public void init(OnCreateVHListener<S> onCreateVHListener){
-        init(onCreateVHListener, null, null);
+    public void init(OnCreateVHListener<S,T>... onCreateVHListeners){
+        init(null, null, onCreateVHListeners);
     }
 
     /**
      * 初始化方法，传入需要的接口实现类
-     * @param onCreateVHListener 创建ViewHolder接口
+     * @param onCreateVHListeners 创建ViewHolder接口
      * @param onRefreshListener 下拉刷新接口
      */
-    public void init(OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener){
-        init(onCreateVHListener, onRefreshListener, null);
+    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OnCreateVHListener<S,T>... onCreateVHListeners){
+        init(onRefreshListener, null, onCreateVHListeners);
     }
 
     /**
      * 初始化方法，传入需要的接口实现类
-     * @param onCreateVHListener 创建ViewHolder接口
      * @param onRefreshListener 下拉刷新接口
      * @param onLoadMoreListener 加载更多接口
+     * @param onCreateVHListeners 创建ViewHolder接口
      */
-    public void init(OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener){
+    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener, OnCreateVHListener<S,T>... onCreateVHListeners){
         if(onRefreshListener != null) {
             this.onRefreshListener = onRefreshListener;
         }else{
             swipeRefreshLayout.setEnabled(false);
         }
 
+        List<OnCreateVHListener<S,T>> listeners = new ArrayList<>();
+        listeners.addAll(Arrays.asList(onCreateVHListeners));
+
         if(onLoadMoreListener != null) {
             this.onLoadMoreListener = onLoadMoreListener;
-            adapter = new OneAdapter<>(onCreateVHListener, oneLoadingLayout);
+            adapter = new OneAdapter<>(listeners, oneLoadingLayout);
         }else{
-            adapter = new OneAdapter<>(onCreateVHListener);
+            adapter = new OneAdapter<>(listeners);
         }
 
         recyclerView.setAdapter(adapter);
