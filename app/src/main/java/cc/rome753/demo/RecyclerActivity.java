@@ -49,25 +49,11 @@ public class RecyclerActivity extends AppCompatActivity {
                 }
         );
 
-        orv.setSpanCount(3);
+//        orv.setSpanCount(3);
 
-        View header = View.inflate(this, R.layout.layout_header, null);
-        orv.addHeader(header);
+//        View header = View.inflate(this, R.layout.layout_header, null);
+//        orv.addHeader(header);
 
-    }
-
-    private void requestData(final boolean append){
-        orv.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                List<UserInfo> list = initData();
-                if(append) {
-                    orv.addData(list);
-                }else{
-                    orv.setData(list);
-                }
-            }
-        }, 1000);
     }
 
     class UserInfoVH extends OneAdapter.VH<UserInfo>{
@@ -81,7 +67,7 @@ public class RecyclerActivity extends AppCompatActivity {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(RecyclerActivity.this, o.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), o.getName(), Toast.LENGTH_SHORT).show();
                 }
             });
             TextView tvName = itemView.findViewById(R.id.tv_name);
@@ -89,7 +75,21 @@ public class RecyclerActivity extends AppCompatActivity {
         }
     }
 
-    private List<UserInfo> initData() {
+    private void requestData(final boolean append){
+        orv.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                List<UserInfo> list = fetchData();
+                if(append) {
+                    orv.addData(list);
+                }else{
+                    orv.setData(list);
+                }
+            }
+        }, 1000);
+    }
+
+    private List<UserInfo> fetchData() {
         List<UserInfo> list = new ArrayList<>();
         for(int i = 0; i < 26; i++){
             UserInfo userInfo = new UserInfo();

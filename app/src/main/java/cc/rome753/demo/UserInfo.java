@@ -5,6 +5,7 @@ package cc.rome753.demo;
  */
 
 public class UserInfo {
+
     private String name;
 
     public String getName() {

@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * RecyclerView.Adapter适配器的封装，泛型S是ViewHolder类型，泛型T是数据类型
- * ViewType: footer=0, header=-1,-2,-3..., item=1
- * Created by crc on 2017/4/11.
+ * RecyclerView.Adapter适配器的封装
+ *
+ * 泛型S是ViewHolder类型，泛型T是数据类型
+ *
+ * ViewType: footer=0, header=-1,-2,-3..., 普通item=1
+ *
+ * Created by chao on 2017/4/11.
  */
 
 public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adapter<S> {
@@ -20,9 +24,7 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
     private OnCreateVHListener<S> onCreateVHListener;
 
     private List<VH<Object>> headerVHList;
-
     private VH<Object> footerVH;
-
 
     public OneAdapter(OnCreateVHListener<S> onCreateVHListener){
         this(onCreateVHListener, null);
@@ -40,12 +42,12 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
         headerVHList = new ArrayList<>();
     }
 
-    public void setData(List<T> data){
+    void setData(List<T> data){
         this.data = data;
         notifyDataSetChanged();
     }
 
-    public void addData(List<T> data){
+    void addData(List<T> data){
         this.data.addAll(data);
         notifyDataSetChanged();
     }
@@ -75,7 +77,7 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
         if(getItemViewType(position) < 0){//header
             return;
         }
-        if(getItemViewType(position) == 0){
+        if(getItemViewType(position) == 0){//footer
             return;
         }
 
@@ -102,6 +104,15 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
         }
         int footer = footerVH == null ? 0 : 1;
         return data.size() + footer + headerVHList.size();
+    }
+
+    /**
+     * 当前位置是否是普通item，即不是header或footer
+     * @param position
+     * @return
+     */
+    boolean isNormalItem(int position){
+        return getItemViewType(position) > 0;
     }
 
     public static abstract class VH<T> extends RecyclerView.ViewHolder{

@@ -11,7 +11,9 @@ import cc.rome753.demo.R;
 
 
 /**
- * Created by crc on 2017/5/3.
+ * 加载更多的footer
+ *
+ * Created by chao on 2017/5/3.
  */
 
 public class OneLoadingLayout extends FrameLayout {

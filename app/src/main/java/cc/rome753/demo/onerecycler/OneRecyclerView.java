@@ -19,6 +19,8 @@ import cc.rome753.demo.R;
 
 /**
  * RecyclerView的包装类，封装了RecyclerView、OneAdapter、SwipeRefreshLayout和emptyView
+ *
+ * 泛型S是ViewHolder类型，泛型T是数据类型
  * Created by crc on 2017/4/11.
  */
 
@@ -27,9 +29,10 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
     private SwipeRefreshLayout swipeRefreshLayout;
     private OneLoadingLayout oneLoadingLayout;
     private RecyclerView recyclerView;
+    private View emptyView;
+
     private OneAdapter<S, T> adapter;
     private GridLayoutManager layoutManager;
-    private View emptyView;
 
     private SwipeRefreshLayout.OnRefreshListener onRefreshListener;
     private OneLoadingLayout.OnLoadMoreListener onLoadMoreListener;
@@ -45,19 +48,20 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
     public OneRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         inflate(context, R.layout.layout_one_recycler, this);
-        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.srl_wrapper);
+
+        swipeRefreshLayout = findViewById(R.id.srl_wrapper);
         swipeRefreshLayout.setOnRefreshListener(this);
 
         ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         oneLoadingLayout = new OneLoadingLayout(getContext());
         oneLoadingLayout.setLayoutParams(params);
 
-        recyclerView = (RecyclerView)findViewById(R.id.rv_wrapper);
+        recyclerView = findViewById(R.id.rv_wrapper);
         layoutManager = new GridLayoutManager(context, 1);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return adapter.getItemViewType(position) > 0 ? 1 : layoutManager.getSpanCount();
+                return adapter.isNormalItem(position) ? 1 : layoutManager.getSpanCount();
             }
         });
         recyclerView.setLayoutManager(layoutManager);
@@ -79,25 +83,42 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
                 }
             }
         });
+
         emptyView = findViewById(R.id.view_empty);
         emptyView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!swipeRefreshLayout.isRefreshing()) {
+                    emptyView.setVisibility(GONE);
                     onRefresh();
                 }
             }
         });
     }
 
+    /**
+     * 初始化方法，传入需要的接口实现类
+     * @param onCreateVHListener 创建ViewHolder接口
+     */
     public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener){
         init(onCreateVHListener, null, null);
     }
 
+    /**
+     * 初始化方法，传入需要的接口实现类
+     * @param onCreateVHListener 创建ViewHolder接口
+     * @param onRefreshListener 下拉刷新接口
+     */
     public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener){
         init(onCreateVHListener, onRefreshListener, null);
     }
 
+    /**
+     * 初始化方法，传入需要的接口实现类
+     * @param onCreateVHListener 创建ViewHolder接口
+     * @param onRefreshListener 下拉刷新接口
+     * @param onLoadMoreListener 加载更多接口
+     */
     public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener){
         if(onRefreshListener != null) {
             this.onRefreshListener = onRefreshListener;
@@ -116,17 +137,29 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
         onRefresh();
     }
 
+    /**
+     * 设置列数
+     * @param spanCount
+     */
     public void setSpanCount(int spanCount){
         layoutManager.setSpanCount(spanCount);
     }
 
+    /**
+     * 添加一个header，如一个BannerView
+     * 多次调用可添加多个
+     * header的数据和view由自身控制
+     * @param header headerView
+     */
     public void addHeader(View header){
         ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         header.setLayoutParams(params);
         adapter.addHeader(header);
     }
 
-    //下拉刷新回调
+    /**
+     * 下拉刷新回调
+     */
     @Override
     public void onRefresh() {
         if(onRefreshListener != null) {
@@ -135,7 +168,9 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
         }
     }
 
-    //加载更多回调
+    /**
+     * 加载更多回调
+     */
     public void onLoadMore() {
         if(onLoadMoreListener != null) {
             oneLoadingLayout.setLoading(true);
@@ -144,7 +179,7 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
     }
 
     /**
-     * 获取到数据
+     * 刷新数据
      * @param data 数据
      */
     public void setData(List<T> data){
@@ -157,6 +192,10 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
         }
     }
 
+    /**
+     * 添加数据
+     * @param data 数据
+     */
     public void addData(List<T> data){
         oneLoadingLayout.setLoading(false);
         if(data == null || data.size() == 0) {
