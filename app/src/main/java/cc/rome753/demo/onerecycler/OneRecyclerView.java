@@ -24,7 +24,7 @@ import cc.rome753.demo.R;
  * Created by crc on 2017/4/11.
  */
 
-public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
+public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implements SwipeRefreshLayout.OnRefreshListener {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private OneLoadingLayout oneLoadingLayout;
@@ -100,7 +100,7 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
      * 初始化方法，传入需要的接口实现类
      * @param onCreateVHListener 创建ViewHolder接口
      */
-    public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener){
+    public void init(OnCreateVHListener<S> onCreateVHListener){
         init(onCreateVHListener, null, null);
     }
 
@@ -109,7 +109,7 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
      * @param onCreateVHListener 创建ViewHolder接口
      * @param onRefreshListener 下拉刷新接口
      */
-    public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener){
+    public void init(OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener){
         init(onCreateVHListener, onRefreshListener, null);
     }
 
@@ -119,7 +119,7 @@ public class OneRecyclerView<S extends OneAdapter.VH<T>, T> extends FrameLayout 
      * @param onRefreshListener 下拉刷新接口
      * @param onLoadMoreListener 加载更多接口
      */
-    public void init(OneAdapter.OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener){
+    public void init(OnCreateVHListener<S> onCreateVHListener, SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener){
         if(onRefreshListener != null) {
             this.onRefreshListener = onRefreshListener;
         }else{

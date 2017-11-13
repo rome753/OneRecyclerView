@@ -1,7 +1,6 @@
 package cc.rome753.demo.onerecycler;
 
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -18,13 +17,13 @@ import java.util.List;
  * Created by chao on 2017/4/11.
  */
 
-public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adapter<S> {
+public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
 
     private List<T> data;
     private OnCreateVHListener<S> onCreateVHListener;
 
-    private List<VH<Object>> headerVHList;
-    private VH<Object> footerVH;
+    private List<OneVH<Object>> headerVHList;
+    private OneVH<Object> footerVH;
 
     public OneAdapter(OnCreateVHListener<S> onCreateVHListener){
         this(onCreateVHListener, null);
@@ -33,7 +32,7 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
     public OneAdapter(OnCreateVHListener<S> onCreateVHListener, View oneLoadingLayout){
         this.onCreateVHListener = onCreateVHListener;
         if(oneLoadingLayout != null) {
-            this.footerVH = new VH<Object>(oneLoadingLayout) {
+            this.footerVH = new OneVH<Object>(oneLoadingLayout) {
                 @Override
                 public void bindView(int position, Object o) {
                 }
@@ -53,7 +52,7 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
     }
 
     void addHeader(View header){
-        headerVHList.add(new VH<Object>(header){
+        headerVHList.add(new OneVH<Object>(header){
             @Override
             public void bindView(int position, Object t) {
             }
@@ -113,23 +112,6 @@ public class OneAdapter<S extends OneAdapter.VH<T>, T> extends RecyclerView.Adap
      */
     boolean isNormalItem(int position){
         return getItemViewType(position) > 0;
-    }
-
-    public static abstract class VH<T> extends RecyclerView.ViewHolder{
-
-        public VH(View itemView) {
-            super(itemView);
-        }
-
-        public VH(ViewGroup parent, int layoutRes) {
-            super(LayoutInflater.from(parent.getContext()).inflate(layoutRes, parent, false));
-        }
-
-        public abstract void bindView(int position, T t);
-    }
-
-    public interface OnCreateVHListener<S extends VH>{
-        S onCreateHolder(ViewGroup parent);
     }
 
 }

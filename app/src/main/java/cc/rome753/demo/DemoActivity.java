@@ -11,27 +11,28 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import cc.rome753.demo.onerecycler.OneAdapter;
+import cc.rome753.demo.onerecycler.OnCreateVHListener;
 import cc.rome753.demo.onerecycler.OneLoadingLayout;
 import cc.rome753.demo.onerecycler.OneRecyclerView;
+import cc.rome753.demo.onerecycler.OneVH;
 
 /**
  * Created by chao on 17-10-10.
  */
 
-public class RecyclerActivity extends AppCompatActivity {
+public class DemoActivity extends AppCompatActivity {
 
     private OneRecyclerView orv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler);
+        setContentView(R.layout.activity_demo);
         orv = findViewById(R.id.orv);
         orv.init(
-                new OneAdapter.OnCreateVHListener() {
+                new OnCreateVHListener() {
                     @Override
-                    public OneAdapter.VH onCreateHolder(ViewGroup parent) {
+                    public OneVH onCreateHolder(ViewGroup parent) {
                         return new UserInfoVH(parent);
                     }
                 },
@@ -56,14 +57,14 @@ public class RecyclerActivity extends AppCompatActivity {
 
     }
 
-    class UserInfoVH extends OneAdapter.VH<UserInfo>{
+    class UserInfoVH extends OneVH<UserInfo> {
 
-        public UserInfoVH(ViewGroup parent) {
+        public UserInfoVH(ViewGroup parent) {//1.设置item布局文件
             super(parent, R.layout.item_user_simple);
         }
 
         @Override
-        public void bindView(int position, final UserInfo o) {
+        public void bindView(int position, final UserInfo o) {//2.处理点击事件和设置数据
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
