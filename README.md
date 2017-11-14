@@ -1,5 +1,5 @@
 # OneRecyclerView
-一句代码调用的RecyclerView，支持多种ItemType、SwipeRefreshLayout下拉刷新、加载更多、空数据EmptyView和多列布局
+一句代码调用的RecyclerView，支持多种ViewType、SwipeRefreshLayout下拉刷新、加载更多、空数据EmptyView和多列布局
 
 ## 效果图
 ![refresh and loadmore](https://github.com/rome753/OneRecyclerView/raw/master/screenshots/orv_base.gif)
@@ -81,7 +81,7 @@
 ```
 调用OneRecyclerView的init()方法，传入下拉刷新监听、加载更多监听和创建ViewHolder监听即可。
 
-> OneRecyclerView的init()方法最后一个参数是可变参数，针对多种ItemType情况：
+> OneRecyclerView的init()方法最后一个参数是可变参数，针对多种ViewType情况：
 
 > 实现多个ViewHolder，用OnCreateVHListener包装并传入
 
@@ -99,3 +99,5 @@
 ```
 
 > 不设置默认是1列；多列显示与多种ViewType一般不会同时用到，根据具体需求选择其一
+
+(原理分析)[http://www.jianshu.com/p/d73b937bcc0d]
