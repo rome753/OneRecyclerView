@@ -23,14 +23,14 @@ import cc.rome753.demo.onerecycler.OneVH;
 
 public class DemoActivity extends AppCompatActivity {
 
-    private OneRecyclerView orv;
+    private OneRecyclerView mOneRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_demo);
-        orv = findViewById(R.id.orv);
-        orv.init(
+        mOneRecyclerView = findViewById(R.id.orv);
+        mOneRecyclerView.init(
                 new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
@@ -67,10 +67,10 @@ public class DemoActivity extends AppCompatActivity {
                 }
         );
 
-//        orv.setSpanCount(3);
+//        mOneRecyclerView.setSpanCount(3);
 
 //        View header = View.inflate(this, R.layout.layout_header, null);
-//        orv.addHeader(header);
+//        mOneRecyclerView.addHeader(header);
 
     }
 
@@ -114,14 +114,14 @@ public class DemoActivity extends AppCompatActivity {
     }
 
     private void requestData(final boolean append){
-        orv.postDelayed(new Runnable() {
+        mOneRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 List<UserInfo> list = fetchData();
                 if(append) {
-                    orv.addData(list);
+                    mOneRecyclerView.addData(list);
                 }else{
-                    orv.setData(list);
+                    mOneRecyclerView.setData(list);
                 }
             }
         }, 1000);
