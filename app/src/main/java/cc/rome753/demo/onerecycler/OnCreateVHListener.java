@@ -2,7 +2,7 @@ package cc.rome753.demo.onerecycler;
 
 import android.view.ViewGroup;
 
-public interface OnCreateVHListener<S extends OneVH, T>{
+public interface OnCreateVHListener<S extends OneVH>{
         /**
          * 创建ViewHolder
          * @param parent RecyclerView
@@ -16,5 +16,5 @@ public interface OnCreateVHListener<S extends OneVH, T>{
          * @param t
          * @return
          */
-        boolean isCreate(int position, T t);
+        boolean isCreate(int position, Object t);
 }

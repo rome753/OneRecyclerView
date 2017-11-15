@@ -51,7 +51,7 @@ public class DemoActivity extends AppCompatActivity {
 
                     @Override
                     public boolean isCreate(int position, Object o) {
-                        return position % 3 > 0;
+                        return o instanceof UserInfo;
                     }
                 },
                 new OnCreateVHListener() {
@@ -62,7 +62,7 @@ public class DemoActivity extends AppCompatActivity {
 
                     @Override
                     public boolean isCreate(int position, Object o) {
-                        return position % 3 == 0;
+                        return o instanceof String;
                     }
                 }
         );
@@ -93,22 +93,22 @@ public class DemoActivity extends AppCompatActivity {
         }
     }
 
-    class TextVH extends OneVH<UserInfo> {
+    class TextVH extends OneVH<String> {
 
         public TextVH(ViewGroup parent) {//1.设置item布局文件
             super(parent, android.R.layout.simple_list_item_1);
         }
 
         @Override
-        public void bindView(int position, final UserInfo o) {//2.处理点击事件和设置数据
+        public void bindView(int position, final String o) {//2.处理点击事件和设置数据
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(), o.getName(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(v.getContext(), o, Toast.LENGTH_SHORT).show();
                 }
             });
             TextView tvName = itemView.findViewById(android.R.id.text1);
-            tvName.setText(o.getName());
+            tvName.setText(o);
             tvName.setBackgroundColor(Color.GREEN);
         }
     }
@@ -117,7 +117,7 @@ public class DemoActivity extends AppCompatActivity {
         mOneRecyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                List<UserInfo> list = fetchData();
+                List<Object> list = fetchData();
                 if(append) {
                     mOneRecyclerView.addData(list);
                 }else{
@@ -127,12 +127,18 @@ public class DemoActivity extends AppCompatActivity {
         }, 1000);
     }
 
-    private List<UserInfo> fetchData() {
-        List<UserInfo> list = new ArrayList<>();
+    private List<Object> fetchData() {
+        List<Object> list = new ArrayList<>();
         for(int i = 0; i < 26; i++){
-            UserInfo userInfo = new UserInfo();
-            userInfo.setName(String.valueOf((char)('A' + i)));
-            list.add(userInfo);
+            //String类型
+            if(i % 4 == 0){
+                String s = "String " + i;
+                list.add(s);
+            }else {//UserInfo类型
+                UserInfo userInfo = new UserInfo();
+                userInfo.setName(String.valueOf((char) ('A' + i)));
+                list.add(userInfo);
+            }
         }
 
         return list;

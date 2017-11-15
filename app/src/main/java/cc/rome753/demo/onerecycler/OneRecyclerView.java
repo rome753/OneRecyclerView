@@ -102,7 +102,7 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
      * 初始化方法，传入需要的接口实现类
      * @param onCreateVHListeners 创建ViewHolder接口
      */
-    public void init(OnCreateVHListener<S,T>... onCreateVHListeners){
+    public void init(OnCreateVHListener<S>... onCreateVHListeners){
         init(null, null, onCreateVHListeners);
     }
 
@@ -111,7 +111,7 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
      * @param onCreateVHListeners 创建ViewHolder接口
      * @param onRefreshListener 下拉刷新接口
      */
-    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OnCreateVHListener<S,T>... onCreateVHListeners){
+    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OnCreateVHListener<S>... onCreateVHListeners){
         init(onRefreshListener, null, onCreateVHListeners);
     }
 
@@ -121,14 +121,14 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
      * @param onLoadMoreListener 加载更多接口
      * @param onCreateVHListeners 创建ViewHolder接口
      */
-    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener, OnCreateVHListener<S,T>... onCreateVHListeners){
+    public void init(SwipeRefreshLayout.OnRefreshListener onRefreshListener, OneLoadingLayout.OnLoadMoreListener onLoadMoreListener, OnCreateVHListener<S>... onCreateVHListeners){
         if(onRefreshListener != null) {
             this.onRefreshListener = onRefreshListener;
         }else{
             swipeRefreshLayout.setEnabled(false);
         }
 
-        List<OnCreateVHListener<S,T>> listeners = new ArrayList<>();
+        List<OnCreateVHListener<S>> listeners = new ArrayList<>();
         listeners.addAll(Arrays.asList(onCreateVHListeners));
 
         if(onLoadMoreListener != null) {
@@ -187,7 +187,7 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
      * 刷新数据
      * @param data 数据
      */
-    public void setData(List<T> data){
+    public void setData(List<Object> data){
         swipeRefreshLayout.setRefreshing(false);
         adapter.setData(data);
         if(data == null || data.size() == 0) {
@@ -201,7 +201,7 @@ public class OneRecyclerView<S extends OneVH<T>, T> extends FrameLayout implemen
      * 添加数据
      * @param data 数据
      */
-    public void addData(List<T> data){
+    public void addData(List<Object> data){
         oneLoadingLayout.setLoading(false);
         if(data == null || data.size() == 0) {
             return;

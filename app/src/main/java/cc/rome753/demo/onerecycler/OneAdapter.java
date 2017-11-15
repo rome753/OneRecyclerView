@@ -21,17 +21,17 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
     private static final int TYPE_FOOTER = -1;      //加载更多的footer类型，只有一种
     private static final int TYPE_HEADER_MAX = -2;  //多个header类型 -2,-3,-4...
 
-    private List<T> data;
-    private List<OnCreateVHListener<S,T>> listeners;
+    private List<Object> data;
+    private List<OnCreateVHListener<S>> listeners;
 
     private List<OneVH<Object>> headerVHList;
     private OneVH<Object> footerVH;
 
-    public OneAdapter(List<OnCreateVHListener<S,T>> listeners){
+    public OneAdapter(List<OnCreateVHListener<S>> listeners){
         this(listeners, null);
     }
 
-    public OneAdapter(List<OnCreateVHListener<S,T>> listeners, View oneLoadingLayout){
+    public OneAdapter(List<OnCreateVHListener<S>> listeners, View oneLoadingLayout){
         this.listeners = listeners;
         if(oneLoadingLayout != null) {
             this.footerVH = new OneVH<Object>(oneLoadingLayout) {
@@ -43,12 +43,12 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
         headerVHList = new ArrayList<>();
     }
 
-    void setData(List<T> data){
+    void setData(List<Object> data){
         this.data = data;
         notifyDataSetChanged();
     }
 
-    void addData(List<T> data){
+    void addData(List<Object> data){
         this.data.addAll(data);
         notifyDataSetChanged();
     }
@@ -72,10 +72,10 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
         }
 
         int pos = position - headerVHList.size();
-        T t = data.get(pos);
+        Object t = data.get(pos);
 
         for(int i = 0; i < listeners.size(); i++){
-            OnCreateVHListener<S,T> listener = listeners.get(i);
+            OnCreateVHListener<S> listener = listeners.get(i);
             if(listener.isCreate(pos, t)){
                 return i;
             }
@@ -104,8 +104,8 @@ public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
         }
 
         int pos = position - headerVHList.size();
-        T t = data.get(pos);
-        holder.bindView(pos, t);
+        Object t = data.get(pos);
+        holder.bindViewCast(pos, t);
     }
 
     @Override
