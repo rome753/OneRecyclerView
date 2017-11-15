@@ -12,22 +12,14 @@ import java.util.List;
  *
  * 泛型S是ViewHolder类型，泛型T是数据类型
  *
- * ViewType:
-     * header1...-3
-     * header2...-2
-     * footer...-1
-     * normal1...0
-     * normal2...1
-     * normal3...2
- *
  * Created by chao on 2017/4/11.
  */
 
 public class OneAdapter<S extends OneVH<T>, T> extends RecyclerView.Adapter<S> {
 
-    private static final int TYPE_FOOTER = -1;
-    private static final int TYPE_HEADER_MAX = TYPE_FOOTER - 1;
-    private static final int TYPE_NORMAL_MIN = TYPE_FOOTER + 1;
+    private static final int TYPE_NORMAL_MIN = 0;   //多种普通Item类型 0,1,2...
+    private static final int TYPE_FOOTER = -1;      //加载更多的footer类型，只有一种
+    private static final int TYPE_HEADER_MAX = -2;  //多个header类型 -2,-3,-4...
 
     private List<T> data;
     private List<OnCreateVHListener<S,T>> listeners;

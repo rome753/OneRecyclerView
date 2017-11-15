@@ -100,4 +100,4 @@
 
 > 不设置默认是1列；多列显示与多种ViewType一般不会同时用到，根据具体需求选择其一
 
-(原理分析)[http://www.jianshu.com/p/d73b937bcc0d]
+[原理分析](http://www.jianshu.com/p/d73b937bcc0d)
