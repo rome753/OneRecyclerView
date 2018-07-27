@@ -1,4 +1,4 @@
-# 已废弃。请使用(OneAdapter)[https://github.com/rome753/OneAdapter]这个项目，有更好的功能和封装。
+# 已废弃。请使用[OneAdapter(https://github.com/rome753/OneAdapter)这个项目，有更好的功能和封装。
 
 # OneRecyclerView
 一句代码调用的RecyclerView，支持多种ViewType、SwipeRefreshLayout下拉刷新、加载更多、空数据EmptyView和多列布局
